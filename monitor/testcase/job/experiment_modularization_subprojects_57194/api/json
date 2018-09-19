@@ -1,0 +1,65 @@
+{
+	"_class": "org.jenkinsci.plugins.workflow.job.WorkflowJob",
+	"actions": [{}, {}, {}, {}, {}, {
+		"_class": "com.cloudbees.plugins.credentials.ViewCredentialsAction"
+	}],
+	"description": "",
+	"displayName": "experiment_modularization_subprojects_57194",
+	"displayNameOrNull": null,
+	"fullDisplayName": "experiment_modularization_subprojects_57194",
+	"fullName": "experiment_modularization_subprojects_57194",
+	"name": "experiment_modularization_subprojects_57194",
+	"url": "http://my.host:8001/job/experiment_modularization_subprojects_57194/",
+	"buildable": true,
+	"builds": [{
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 2,
+		"url": "http://my.host:8001/job/experiment_modularization_subprojects_57194/2/"
+	}, {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 1,
+		"url": "http://my.host:8001/job/experiment_modularization_subprojects_57194/1/"
+	}],
+	"color": "red",
+	"firstBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 1,
+		"url": "http://my.host:8001/job/experiment_modularization_subprojects_57194/1/"
+	},
+	"healthReport": [{
+		"description": "Build stability: All recent builds failed.",
+		"iconClassName": "icon-health-00to19",
+		"iconUrl": "health-00to19.png",
+		"score": 0
+	}],
+	"inQueue": false,
+	"keepDependencies": false,
+	"lastBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 2,
+		"url": "http://my.host:8001/job/experiment_modularization_subprojects_57194/2/"
+	},
+	"lastCompletedBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 2,
+		"url": "http://my.host:8001/job/experiment_modularization_subprojects_57194/2/"
+	},
+	"lastFailedBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 2,
+		"url": "http://my.host:8001/job/experiment_modularization_subprojects_57194/2/"
+	},
+	"lastStableBuild": null,
+	"lastSuccessfulBuild": null,
+	"lastUnstableBuild": null,
+	"lastUnsuccessfulBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 2,
+		"url": "http://my.host:8001/job/experiment_modularization_subprojects_57194/2/"
+	},
+	"nextBuildNumber": 3,
+	"property": [],
+	"queueItem": null,
+	"concurrentBuild": true,
+	"resumeBlocked": false
+}

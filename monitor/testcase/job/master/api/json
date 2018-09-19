@@ -1,0 +1,61 @@
+{
+	"_class": "org.jenkinsci.plugins.workflow.job.WorkflowJob",
+	"actions": [{}, {}, {}, {}, {}, {
+		"_class": "com.cloudbees.plugins.credentials.ViewCredentialsAction"
+	}],
+	"description": "",
+	"displayName": "master",
+	"displayNameOrNull": null,
+	"fullDisplayName": "master",
+	"fullName": "master",
+	"name": "master",
+	"url": "http://my.host:8001/job/master/",
+	"buildable": true,
+	"builds": [{
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 1,
+		"url": "http://my.host:8001/job/master/1/"
+	}],
+	"color": "blue",
+	"firstBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 1,
+		"url": "http://my.host:8001/job/master/1/"
+	},
+	"healthReport": [{
+		"description": "Build stability: No recent builds failed.",
+		"iconClassName": "icon-health-80plus",
+		"iconUrl": "health-80plus.png",
+		"score": 100
+	}],
+	"inQueue": false,
+	"keepDependencies": false,
+	"lastBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 1,
+		"url": "http://my.host:8001/job/master/1/"
+	},
+	"lastCompletedBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 1,
+		"url": "http://my.host:8001/job/master/1/"
+	},
+	"lastFailedBuild": null,
+	"lastStableBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 1,
+		"url": "http://my.host:8001/job/master/1/"
+	},
+	"lastSuccessfulBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 1,
+		"url": "http://my.host:8001/job/master/1/"
+	},
+	"lastUnstableBuild": null,
+	"lastUnsuccessfulBuild": null,
+	"nextBuildNumber": 2,
+	"property": [],
+	"queueItem": null,
+	"concurrentBuild": true,
+	"resumeBlocked": false
+}

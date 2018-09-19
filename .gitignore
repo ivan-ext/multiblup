@@ -1,14 +1,21 @@
-.gradle
+##### Dirs by path
+
 /build/
+/out/
+/bin/
+/.idea/
+/.gradle/
+/containers/
+/monitor/bin/
+/monitor/node_modules/
 
-# Ignore Gradle GUI config
-gradle-app.setting
+##### Dirs by name
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
+.temp
 
-# Cache of project
-.gradletasknamecache
+##### Wildcards
 
-# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
-# gradle/wrapper/gradle-wrapper.properties
+##### Files
+
+/docker/docker-compose.yml
+/docker/web/Dockerfile

@@ -1,0 +1,18 @@
+#!/bin/bash -eu
+
+TEMPLATE="$1"
+DEST="$2"
+
+IMAGE_BASE="$3"
+IMAGE_TAG="$4"
+CONTAINER_SUFFIX="$5"
+CONTAINER_PORT="$6"
+
+CONTAINER_NAME="${IMAGE_BASE}_${IMAGE_TAG}${CONTAINER_SUFFIX}"
+
+cp "$TEMPLATE" "$DEST"
+
+sed -i "s/!!IMAGE_BASE!!/${IMAGE_BASE}/g"         "$DEST"
+sed -i "s/!!IMAGE_TAG!!/${IMAGE_TAG}/g"           "$DEST"
+sed -i "s/!!CONTAINER_NAME!!/${CONTAINER_NAME}/g" "$DEST"
+sed -i "s/!!CONTAINER_PORT!!/${CONTAINER_PORT}/g" "$DEST"

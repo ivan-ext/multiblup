@@ -1,0 +1,45 @@
+{
+	"_class": "hudson.model.Hudson",
+	"assignedLabels": [{
+		"name": "master"
+	}],
+	"mode": "NORMAL",
+	"nodeDescription": "the master Jenkins node",
+	"nodeName": "",
+	"numExecutors": 2,
+	"description": null,
+	"jobs": [{
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowJob",
+		"name": "master",
+		"url": "http://my.host:8001/job/master/",
+		"color": "blue"
+	}, {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowJob",
+		"name": "experiment_modularization_subprojects_57194",
+		"url": "http://my.host:8001/job/experiment_modularization_subprojects_57194/",
+		"color": "red"
+	}, {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowJob",
+		"name": "fix_tomcat_crash_java11_update_58433",
+		"url": "http://my.host:8001/job/Job3/",
+		"color": "blue"
+	}],
+	"overallLoad": {},
+	"primaryView": {
+		"_class": "hudson.model.AllView",
+		"name": "all",
+		"url": "http://my.host:8001/"
+	},
+	"quietingDown": false,
+	"slaveAgentPort": 50000,
+	"unlabeledLoad": {
+		"_class": "jenkins.model.UnlabeledLoadStatistics"
+	},
+	"useCrumbs": false,
+	"useSecurity": true,
+	"views": [{
+		"_class": "hudson.model.AllView",
+		"name": "all",
+		"url": "http://my.host:8001/"
+	}]
+}

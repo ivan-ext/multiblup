@@ -1,0 +1,12 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+NOTE: To try the website out using the provided testcase, go in the web browser to:
+	file:///[path_to_project]/monitor/index.html?base=testcase
+
+NOTE: currently, build is done this way: run from directory "monitor"
+	>>> npm run build
+
+TODO: Get ALL container infos in JSON : `docker inspect [containerID]`
+
+TODO: http://[...]/job/multiblup/job/master/lastBuild/wfapi/
+*	stages[0,1,2,...] / : name and status

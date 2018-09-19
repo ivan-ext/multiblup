@@ -1,0 +1,38 @@
+{
+	"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+	"actions": [{
+		"_class": "hudson.model.CauseAction",
+		"causes": [{
+			"_class": "hudson.model.Cause$UserIdCause",
+			"shortDescription": "Started by user admin",
+			"userId": "admin",
+			"userName": "admin"
+		}]
+	}, {}, {}, {}, {}, {}, {}, {}, {}, {
+		"_class": "org.jenkinsci.plugins.workflow.job.views.FlowGraphAction"
+	}, {}, {}],
+	"artifacts": [],
+	"building": true,
+	"description": "10109+0",
+	"displayName": "#6",
+	"duration": 0,
+	"estimatedDuration": 60603,
+	"executor": {
+		"_class": "hudson.model.OneOffExecutor"
+	},
+	"fullDisplayName": "fix_tomcat_crash_java11_update_58433 #6",
+	"id": "6",
+	"keepLog": false,
+	"number": 6,
+	"queueId": 17,
+	"result": null,
+	"timestamp": 1538582829514,
+	"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/6/",
+	"changeSets": [],
+	"culprits": [],
+	"nextBuild": null,
+	"previousBuild": {
+		"number": 5,
+		"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/5/"
+	}
+}

@@ -1,0 +1,81 @@
+{
+	"_class": "org.jenkinsci.plugins.workflow.job.WorkflowJob",
+	"actions": [{}, {}, {}, {}, {}, {}, {}, {
+		"_class": "com.cloudbees.plugins.credentials.ViewCredentialsAction"
+	}],
+	"description": "",
+	"displayName": "fix_tomcat_crash_java11_update_58433",
+	"displayNameOrNull": null,
+	"fullDisplayName": "fix_tomcat_crash_java11_update_58433",
+	"fullName": "fix_tomcat_crash_java11_update_58433",
+	"name": "fix_tomcat_crash_java11_update_58433",
+	"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/",
+	"buildable": true,
+	"builds": [{
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 6,
+		"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/6/"
+	}, {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 5,
+		"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/5/"
+	}, {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 4,
+		"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/4/"
+	}, {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 3,
+		"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/3/"
+	}, {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 2,
+		"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/2/"
+	}, {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 1,
+		"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/1/"
+	}],
+	"color": "blue_anime",
+	"firstBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 1,
+		"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/1/"
+	},
+	"healthReport": [{
+		"description": "Build stability: No recent builds failed.",
+		"iconClassName": "icon-health-80plus",
+		"iconUrl": "health-80plus.png",
+		"score": 100
+	}],
+	"inQueue": false,
+	"keepDependencies": false,
+	"lastBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 6,
+		"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/6/"
+	},
+	"lastCompletedBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 5,
+		"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/5/"
+	},
+	"lastFailedBuild": null,
+	"lastStableBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 5,
+		"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/5/"
+	},
+	"lastSuccessfulBuild": {
+		"_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+		"number": 5,
+		"url": "http://my.host:8001/job/fix_tomcat_crash_java11_update_58433/5/"
+	},
+	"lastUnstableBuild": null,
+	"lastUnsuccessfulBuild": null,
+	"nextBuildNumber": 7,
+	"property": [],
+	"queueItem": null,
+	"concurrentBuild": true,
+	"resumeBlocked": false
+}

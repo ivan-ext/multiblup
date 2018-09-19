@@ -1,0 +1,8 @@
+FROM nginx:1.15.4-alpine
+
+COPY .temp/* /usr/share/nginx/html/
+
+RUN echo '!!IMAGE_BASE!!:!!IMAGE_TAG!!' > /usr/share/nginx/html/const.txt
+
+# set entrypoint script
+# CMD /entrypoint.sh
