@@ -94,8 +94,28 @@ interface IJenkinsBuild {
 	url: any
 }
 
-interface IJenkinsPipelineBuild {
-	// TODO look up in AWS jenkins
+interface IJenkinsPipelineStage {
+	id: number
+	name: string
+	execNode: any
+	status: string // SUCCESS, IN_PROGRESS, ...
+	startTimeMillis: number
+	durationMillis: number
+	pauseDurationMillis: number
+	// ----- Untyped ----------------------------------------------------------
+	_links: any
+}
+
+interface IJenkinsPipeline {
+	id: number
+	name: string
+	status: string // SUCCESS, IN_PROGRESS, ...
+	startTimeMillis: number
+	endTimeMillis: number
+	durationMillis: number
+	queueDurationMillis: number
+	pauseDurationMillis: number
+	stages: IJenkinsPipelineStage[]
 }
 
 interface IJenkinsBuildWrapped {
