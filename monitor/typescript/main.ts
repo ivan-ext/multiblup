@@ -47,13 +47,17 @@ async function mainLoop(baseUrl: string, dest: JQuery<HTMLElement>, buffer: JQue
 		})
 		const pipelineResults: IJenkinsPipeline[] = await Promise.all(pipelinePromises)
 
-		for (let i = 0; i < jobsResults.length; ++i) {
+		for (let i: number = 0; i < jobsResults.length; ++i) {
 			forEachJob(buffer, jobsResults[i], buildsResults[i], pipelineResults[i])
 		}
 	} catch (e) {
-		failTo(buffer, e) // NOTE use String(Object.keys(e)) and String(Object.keys(e)) to get object's props
+		/* Javascript returns here an object with following properties:
+			readyState,getResponseHeader,getAllResponseHeaders,setRequestHeader,overrideMimeType,
+			statusCode,abort,state,always,catch,pipe,then,promise,progress,done,fail,responseJSON,
+			status,statusText */
+		failTo(buffer, e.statusText)
 	} finally {
-		moveContents(buffer, dest)
+		moveContentsIfDiffer(buffer, dest)
 	}
 }
 
@@ -83,7 +87,8 @@ function forEachJob(dest: JQuery<HTMLElement>, job: IJenkinsJob, build: IJenkins
 	let ago: string
 
 	if (build.building && pipe.stages.length > 0) {
-		ago = pipe.stages.slice(-1)[0].name // get last element
+		const nStages: number = pipe.stages.length
+		ago = `(${nStages}) ${pipe.stages[nStages - 1].name}`
 	} else {
 		ago = getReadableAgo(now - then)
 	}
@@ -207,11 +212,14 @@ function failItemTo(dest: JQuery<HTMLElement>, info: string): void {
 	dest.append(`<div class="entry jsonerror"><div>!@#! ${info} !@#!</div></div>`)
 }
 
-function moveContents(source: JQuery<HTMLElement>, dest: JQuery<HTMLElement>): void {
-	dest.empty()
-	source
-		.children()
-		.clone()
-		.appendTo(dest)
+function moveContentsIfDiffer(source: JQuery<HTMLElement>, dest: JQuery<HTMLElement>): void {
+	if (source.html() !== dest.html()) {
+		dest.empty()
+		source
+			.children()
+			.clone()
+			.appendTo(dest)
+	}
+
 	source.empty()
 }

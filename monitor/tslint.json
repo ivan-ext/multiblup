@@ -5,12 +5,22 @@
 	"rules": {
 		"only-arrow-functions": [true, "allow-named-functions"],
 		"arrow-parens": [false],
-		"typedef": [true, "call-signature", "parameter", "member-variable-declaration"],
 		"quotemark": [true, "single"],
 		"trailing-comma": [false],
 		"indent": [true, "tabs", 4],
 		"no-empty": [false],
-		"semicolon": [false]
+		"semicolon": [false],
+		// Types! Types everywhere!
+		"typedef": [true,
+			"call-signature",
+			"arrow-call-signature",
+			"parameter",
+			"property-declaration",
+			"variable-declaration",
+			"member-variable-declaration",
+			"object-destructuring",
+			"array-destructuring"
+		]
 	},
 	"rulesDirectory": []
 }
