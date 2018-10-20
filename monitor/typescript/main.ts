@@ -116,12 +116,12 @@ function forEachJob(dest: JQuery<HTMLElement>, job: IJenkinsJob, build: IJenkins
 	const jobNameShorted: string = shorten(String(decodeURIComponent(job.name)))
 
 	dest.append(
-		`<div class="entry ${result} ${additionalCssClass}">
+		`<div class="entry line ${result} ${additionalCssClass}">
 			<div class="spinner">${effect}</div>
-			<div class="left">${jobNameShorted}</div>
-			<div class="mid"><span class="description">&nbsp;@${description}</span>
-			<span class="buildnumber">&nbsp;#${buildNumber}</span></div>
-			<div class="right">${ago}</div>
+			<div class="e1">${jobNameShorted}</div>
+			<div class="e2">#${buildNumber}</div>
+			<div class="e3">@${description}</div>
+			<div class="e4">${ago}</div>
 		</div>`
 	)
 }

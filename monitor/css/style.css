@@ -8,11 +8,10 @@ body {
 }
 
 body {
-	/* font-family: Consolas, Hack, 'DejaVu Sans Mono', 'Droid Sans Mono', monospace; */
-	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	font-family: Consolas, Hack, 'DejaVu Sans Mono', 'Droid Sans Mono', monospace;
+	letter-spacing: -0.07em;
 	font-size: 2.2em;
 	font-weight: bold;
-
 	color: #999;
 	background-color: #333;
 }
@@ -25,14 +24,32 @@ body {
 	white-space: nowrap;
 
 	/* left is zero for the spinners */
-	padding: 0.25em 0.75em 0.25em 0;
-	margin: 0.5em;
+	padding: 0.1em 0.33em 0.1em 0;
+	margin: 0.2em 0.5em;
 
-	color: white;
-
-	border-width: 0.25em;
-	border-radius: 5em;
+	border-width: 0.1em;
+	border-radius: 0.5em;
 	border-style: solid;
+}
+
+.headerline {
+	color: gray;
+	border-color: transparent;
+}
+
+.line {
+	color: white;
+}
+
+.e2,
+.e3,
+.e4 {
+	border-left: rgba(255, 255, 255, 0.33) 0.15em solid;
+	overflow: hidden;
+}
+
+.headercell{
+	border-left-color: transparent;
 }
 
 .left {
@@ -48,6 +65,26 @@ body {
 .right {
 	flex-shrink: 0;
 	flex-grow: 0;
+}
+
+.e1 {
+	flex-shrink: 1;
+	flex-grow: 1;
+}
+
+.e2 {
+	flex-shrink: 0;
+	width: 4em;
+}
+
+.e3 {
+	flex-shrink: 0;
+	width: 6em;
+}
+
+.e4 {
+	flex-shrink: 0;
+	width: 7em;
 }
 
 .good {
