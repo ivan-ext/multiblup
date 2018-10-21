@@ -95,7 +95,7 @@
       "id": "62",
       "name": "Container Start",
       "execNode": "",
-      "status": "SUCCESS",
+      "status": "FAILED",
       "startTimeMillis": 1539943554966,
       "durationMillis": 2812,
       "pauseDurationMillis": 0
@@ -103,29 +103,15 @@
     {
       "_links": {
         "self": {
-          "href": "/job/multiblup/job/master/lastBuild/execution/node/72/wfapi/describe"
+          "href": "/job/multiblup/job/master/lastBuild/execution/node/999/wfapi/describe"
         }
       },
-      "id": "72",
-      "name": "Alive Check",
+      "id": "999",
+      "name": "THIS MAY NEVER BE PRINTED",
       "execNode": "",
-      "status": "SUCCESS",
-      "startTimeMillis": 1539943557788,
-      "durationMillis": 1637,
-      "pauseDurationMillis": 0
-    },
-    {
-      "_links": {
-        "self": {
-          "href": "/job/multiblup/job/master/lastBuild/execution/node/92/wfapi/describe"
-        }
-      },
-      "id": "92",
-      "name": "Declarative: Post Actions",
-      "execNode": "",
-      "status": "SUCCESS",
-      "startTimeMillis": 1539943559515,
-      "durationMillis": 232,
+      "status": "FAILED",
+      "startTimeMillis": 1539943554966,
+      "durationMillis": 2812,
       "pauseDurationMillis": 0
     }
   ]

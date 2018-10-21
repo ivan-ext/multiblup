@@ -109,23 +109,9 @@
       "id": "72",
       "name": "Alive Check",
       "execNode": "",
-      "status": "SUCCESS",
+      "status": "IN_PROGRESS",
       "startTimeMillis": 1539943557788,
       "durationMillis": 1637,
-      "pauseDurationMillis": 0
-    },
-    {
-      "_links": {
-        "self": {
-          "href": "/job/multiblup/job/master/lastBuild/execution/node/92/wfapi/describe"
-        }
-      },
-      "id": "92",
-      "name": "Declarative: Post Actions",
-      "execNode": "",
-      "status": "IN_PROGRESS",
-      "startTimeMillis": 1539943559515,
-      "durationMillis": 232,
       "pauseDurationMillis": 0
     }
   ]

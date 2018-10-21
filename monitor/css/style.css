@@ -1,3 +1,7 @@
+/*	=========================================================================
+		Page
+	========================================================================= */
+
 html,
 body {
 	margin: 0;
@@ -9,12 +13,16 @@ body {
 
 body {
 	font-family: Consolas, Hack, 'DejaVu Sans Mono', 'Droid Sans Mono', monospace;
-	letter-spacing: -0.07em;
+	letter-spacing: -0.05em;
 	font-size: 2.2em;
 	font-weight: bold;
 	color: #999;
 	background-color: #333;
 }
+
+/*	=========================================================================
+		Lines
+	========================================================================= */
 
 .entry {
 	display: flex;
@@ -41,6 +49,18 @@ body {
 	color: white;
 }
 
+/*	=========================================================================
+		Cells
+	========================================================================= */
+
+.e1,
+.e2,
+.e3,
+.e4,
+.e5 {
+	overflow: hidden;
+}
+
 .e2,
 .e3,
 .e4 {
@@ -48,24 +68,6 @@ body {
 	overflow: hidden;
 }
 
-.headercell{
-	border-left-color: transparent;
-}
-
-.left {
-	flex-shrink: 0;
-	flex-grow: 1;
-}
-
-.mid {
-	flex-shrink: 0;
-	flex-grow: 0;
-}
-
-.right {
-	flex-shrink: 0;
-	flex-grow: 0;
-}
 
 .e1 {
 	flex-shrink: 1;
@@ -74,17 +76,32 @@ body {
 
 .e2 {
 	flex-shrink: 0;
-	width: 4em;
+	width: 4.5em;
 }
 
 .e3 {
 	flex-shrink: 0;
-	width: 6em;
+	width: 5.5em;
 }
 
 .e4 {
 	flex-shrink: 0;
-	width: 7em;
+	width: 10em;
+}
+
+.e5 {
+	flex-shrink: 0;
+	width: 0.5em;
+}
+
+.subline {
+	font-size: 0.65em;
+	line-height: 90%;
+}
+
+.dockerline {
+	font-size: 0.425em;
+	line-height: 90%;
 }
 
 .good {
@@ -97,57 +114,41 @@ body {
 	background-color: #933;
 }
 
-.jsonerror {
-	flex-direction: column;
+.in-progress {
 	border-color: #444;
-	background-color: #777;
-	color: black;
+	background-color: #555;
 }
 
-.building {
-	border-color: #444;
-	background-color: #777;
-}
-
-.undefined {
+.unknown {
 	color: black;
 	border-color: #444;
 	background-color: #777;
 }
 
-.description {}
+.dockerGood {
+	color: white;
+}
+
+.dockerBad {
+	color: rgba(0, 0, 0, 0.33);
+}
 
 .buildnumber {
 	opacity: 0.25;
 }
+
+/* this must come AFTER e1|e2|e3|e4 to OVERWRITE their values */
+.headercell {
+	border-left-color: transparent;
+	font-style: italic;
+}
+
+/*	=========================================================================
+		Misc
+	========================================================================= */
 
 .pageerror {
 	color: black;
 	background-color: red;
 	padding: 2em;
 }
-
-/*
-.spinner {
-	flex-shrink: 0;
-	flex-grow: 0;
-
-	width: 40px;
-	height: 40px;
-	margin: 100px auto;
-	background-color: #333;
-
-	border-radius: 100%;
-	animation: sk-scaleout 1.0s infinite ease-in-out;
-}
-@keyframes sk-scaleout {
-	0% {
-		transform: scale(0);
-	}
-
-	100% {
-		transform: scale(1.0);
-		opacity: 0;
-	}
-}
-*/

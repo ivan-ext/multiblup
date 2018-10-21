@@ -14,6 +14,16 @@ const BASE_PARAM_NAME: string = 'base' // parameter defines base URL for Jenkins
 q(document).ready(() => main())
 
 // ================================================================================================
+// Classes
+// ================================================================================================
+enum Result { // string values are used by .css
+	GOOD = 'good',
+	BAD = 'bad',
+	IN_PROGRESS = 'in-progress',
+	UNKNOWN = 'unknown'
+}
+
+// ================================================================================================
 // Functions
 // ================================================================================================
 function main(): void {
@@ -84,46 +94,71 @@ async function getPipeline(baseUrl: string, jobName: string): Promise<IJenkinsPi
 function forEachJob(dest: JQuery<HTMLElement>, job: IJenkinsJob, build: IJenkinsBuild, pipe: IJenkinsPipeline): void {
 	const then: number = build.timestamp
 	const now: number = new Date().getTime()
-	let ago: string
+	const ago: string = getReadableAgo(now - then)
 
-	if (build.building && pipe.stages.length > 0) {
-		const nStages: number = pipe.stages.length
-		ago = `(${nStages}) ${pipe.stages[nStages - 1].name}`
-	} else {
-		ago = getReadableAgo(now - then)
-	}
-
-	let result: string
+	let result: Result
 	switch (build.result) {
 		case 'SUCCESS':
-			result = 'good'
+			result = Result.GOOD
 			break
 		case 'FAILURE':
-			result = 'bad'
+			result = Result.BAD
 			break
 		default:
-			result = build.building ? 'building' : 'undefined'
+			result = build.building ? Result.IN_PROGRESS : Result.UNKNOWN
 	}
 
-	const description: string = padEnd(build.description, 7)
-	const buildNumber: string = padEnd(build.number, 4)
-	const additionalCssClass: string = result === 'building' ? 'animated' : ''
+	let stage: string = ''
+	if (result === Result.BAD || (build.building && pipe.stages.length > 0)) {
+		// break after the FIRST failed stage is encountered
+		for (let i: number = 0; i < pipe.stages.length; ++i) {
+			stage = `${i}: ${pipe.stages[i].name}`
+			if (pipe.stages[i].status === 'FAILED') {
+				break
+			}
+		}
+	}
+
+	const additionalCssClass: string = result === Result.IN_PROGRESS ? 'animated' : ''
 	const effect: string =
-		result === 'building'
+		result === Result.IN_PROGRESS
 			? `<div class="bounce1"></div>` + `<div class="bounce2"></div>` + `<div class="bounce3"></div>`
 			: ''
 
 	const jobNameShorted: string = shorten(String(decodeURIComponent(job.name)))
+	const splitBuildDescription: string[] = build.description.split('/', 2)
+	const commitNumber: string = splitBuildDescription[0]
+	const versionString: string = splitBuildDescription[1]
+
+	const dockerNet: boolean = true
+	const dockerDb: boolean = true
+	const dockerWeb: boolean = false
 
 	dest.append(
 		`<div class="entry line ${result} ${additionalCssClass}">
 			<div class="spinner">${effect}</div>
 			<div class="e1">${jobNameShorted}</div>
-			<div class="e2">#${buildNumber}</div>
-			<div class="e3">@${description}</div>
-			<div class="e4">${ago}</div>
+			<div class="e2">#57123</div>
+			<div class="e3">
+			<div class="subline">${versionString}</div>
+				<div class="subline">@${commitNumber}</div>
+			</div>
+			<div class="e4">
+				<div class="subline">#${build.number} &nbsp; ${ago}</div>
+				<div class="subline">${stage}</div>
+			</div>
+			<div class="e5">
+				<div class="dockerline">${grayIfFalse(dockerNet, 'N')}</div>
+				<div class="dockerline">${grayIfFalse(dockerDb, 'D')}</div>
+				<div class="dockerline">${grayIfFalse(dockerWeb, 'W')}</div>
+			</div>
 		</div>`
 	)
+}
+
+function grayIfFalse(state: boolean, letter: string): string {
+	const clazz: string = state ? 'dockerGood' : 'dockerBad'
+	return `<span class="${clazz}">${letter}</span>`
 }
 
 function shorten(text: string): string {
@@ -139,9 +174,8 @@ function shorten(text: string): string {
 }
 
 function getReadableAgo(timestamp: number): string {
-	let rest: number = timestamp / 1000
-	const seconds: number = Math.floor(rest)
-	rest = rest / 60
+	let rest: number = timestamp / 1000 / 60 // 1000: millis, 60: seconds
+
 	const minutes: number = Math.floor(rest)
 	rest = rest / 60
 	const hours: number = Math.floor(rest)
@@ -171,10 +205,33 @@ function getReadableAgo(timestamp: number): string {
 		unit = 'minutes'
 		opacity = '1'
 	} else {
-		return `<span style='opacity:${opacity}'>${padStart('recently', 11)}</span>`
+		return `<span style='opacity:${opacity}'>current</span>`
 	}
 
-	return `<span style='opacity:${opacity}'>${padStart(amount, 3)} ${padEnd(unit, 7)}</span>`
+	return `<span style='opacity:${opacity}'>${amount} ${unit} ago</span>`
+}
+
+function failTo(dest: JQuery<HTMLElement>, info: string): void {
+	dest.append(`<div class='pageerror'>!@#! ${info} !@#!</div>`)
+}
+
+function moveContentsIfDiffer(source: JQuery<HTMLElement>, dest: JQuery<HTMLElement>): void {
+	if (source.html() !== dest.html()) {
+		dest.empty()
+		source
+			.children()
+			.clone()
+			.appendTo(dest)
+	}
+
+	source.empty()
+}
+
+// ================================================================================================
+// TODO Not used
+// ================================================================================================
+function failItemTo(dest: JQuery<HTMLElement>, info: string): void {
+	dest.append(`<div class="entry jsonerror"><div>!@#! ${info} !@#!</div></div>`)
 }
 
 function getReadableDate(timestamp: number): string {
@@ -192,34 +249,14 @@ function getReadableDate(timestamp: number): string {
 	)
 }
 
+function padZeros(obj: any): string {
+	return String(obj).padStart(2, '0')
+}
+
 function padStart(text: any, num: number): string {
 	return String(text).padStart(num, NBSP)
 }
 
 function padEnd(text: any, num: number): string {
 	return String(text).padEnd(num, NBSP)
-}
-
-function padZeros(obj: any): string {
-	return String(obj).padStart(2, '0')
-}
-
-function failTo(dest: JQuery<HTMLElement>, info: string): void {
-	dest.append(`<div class='pageerror'>!@#! ${info} !@#!</div>`)
-}
-
-function failItemTo(dest: JQuery<HTMLElement>, info: string): void {
-	dest.append(`<div class="entry jsonerror"><div>!@#! ${info} !@#!</div></div>`)
-}
-
-function moveContentsIfDiffer(source: JQuery<HTMLElement>, dest: JQuery<HTMLElement>): void {
-	if (source.html() !== dest.html()) {
-		dest.empty()
-		source
-			.children()
-			.clone()
-			.appendTo(dest)
-	}
-
-	source.empty()
 }
