@@ -126,9 +126,10 @@ function forEachJob(dest: JQuery<HTMLElement>, job: IJenkinsJob, build: IJenkins
 			: ''
 
 	const jobNameShorted: string = shorten(String(decodeURIComponent(job.name)))
-	const splitBuildDescription: string[] = build.description.split('/', 2)
+	const splitBuildDescription: string[] = build.description.split('/', 3)
 	const commitNumber: string = splitBuildDescription[0]
 	const versionString: string = splitBuildDescription[1]
+	const ticketNumber: string = splitBuildDescription[2]
 
 	const dockerNet: boolean = true
 	const dockerDb: boolean = true
@@ -138,7 +139,7 @@ function forEachJob(dest: JQuery<HTMLElement>, job: IJenkinsJob, build: IJenkins
 		`<div class="entry line ${result} ${additionalCssClass}">
 			<div class="spinner">${effect}</div>
 			<div class="e1">${jobNameShorted}</div>
-			<div class="e2">#57123</div>
+			<div class="e2">#${ticketNumber}</div>
 			<div class="e3">
 			<div class="subline">${versionString}</div>
 				<div class="subline">@${commitNumber}</div>
