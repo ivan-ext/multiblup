@@ -1,21 +1,21 @@
 import * as q from 'jquery'
 
-// ================================================================================================
+// ====================================================================================================================
 // Globals
-// ================================================================================================
+// ====================================================================================================================
 const REFRESH_DELAY_IN_MILLIS: number = 2000
 const NBSP: string = '\xa0' // non-breaking space
 const BASE_PARAM_NAME: string = 'base' // parameter defines base URL for Jenkins JSON API calls
 
-// ================================================================================================
+// ====================================================================================================================
 // Entrypoint
-// ================================================================================================
+// ====================================================================================================================
 // main loop
 q(document).ready(() => main())
 
-// ================================================================================================
-// Classes
-// ================================================================================================
+// ====================================================================================================================
+// Enums
+// ====================================================================================================================
 enum Result { // string values are used by .css
 	GOOD = 'good',
 	BAD = 'bad',
@@ -23,9 +23,9 @@ enum Result { // string values are used by .css
 	UNKNOWN = 'unknown'
 }
 
-// ================================================================================================
+// ====================================================================================================================
 // Functions
-// ================================================================================================
+// ====================================================================================================================
 function main(): void {
 	const htmlBuffer: JQuery<HTMLElement> = q('#buffer')
 	const htmlList: JQuery<HTMLElement> = q('#list')
@@ -108,7 +108,7 @@ function forEachJob(dest: JQuery<HTMLElement>, job: IJenkinsJob, build: IJenkins
 			result = build.building ? Result.IN_PROGRESS : Result.UNKNOWN
 	}
 
-	let stage: string = ''
+	let stage: string | null = null
 	if (result === Result.BAD || (build.building && pipe.stages.length > 0)) {
 		// break after the FIRST failed stage is encountered
 		for (let i: number = 0; i < pipe.stages.length; ++i) {
@@ -127,13 +127,19 @@ function forEachJob(dest: JQuery<HTMLElement>, job: IJenkinsJob, build: IJenkins
 
 	const jobNameShorted: string = shorten(String(decodeURIComponent(job.name)))
 	const splitBuildDescription: string[] = build.description.split('/', 3)
-	const commitNumber: string = splitBuildDescription[0]
-	const versionString: string = splitBuildDescription[1]
-	const ticketNumber: string = splitBuildDescription[2]
+	const commitNumber: string = emptyIfNull(splitBuildDescription[0])
+	const versionString: string = emptyIfNull(splitBuildDescription[1])
+	const ticketNumber: string = emptyIfNull(splitBuildDescription[2])
 
 	const dockerNet: boolean = true
 	const dockerDb: boolean = true
 	const dockerWeb: boolean = false
+
+	let appendStatusHtml: string = `<div class="subline">#${build.number} &nbsp; ${ago}</div>`
+
+	if (stage != null) {
+		appendStatusHtml += `<div class="subline">${stage}</div>`
+	}
 
 	dest.append(
 		`<div class="entry line ${result} ${additionalCssClass}">
@@ -144,10 +150,7 @@ function forEachJob(dest: JQuery<HTMLElement>, job: IJenkinsJob, build: IJenkins
 			<div class="subline">${versionString}</div>
 				<div class="subline">@${commitNumber}</div>
 			</div>
-			<div class="e4">
-				<div class="subline">#${build.number} &nbsp; ${ago}</div>
-				<div class="subline">${stage}</div>
-			</div>
+			<div class="e4">${appendStatusHtml}</div>
 			<div class="e5">
 				<div class="dockerline">${grayIfFalse(dockerNet, 'N')}</div>
 				<div class="dockerline">${grayIfFalse(dockerDb, 'D')}</div>
@@ -228,9 +231,13 @@ function moveContentsIfDiffer(source: JQuery<HTMLElement>, dest: JQuery<HTMLElem
 	source.empty()
 }
 
-// ================================================================================================
+function emptyIfNull(text: string | null): string {
+	return text == null ? '' : text
+}
+
+// ====================================================================================================================
 // TODO Not used
-// ================================================================================================
+// ====================================================================================================================
 function failItemTo(dest: JQuery<HTMLElement>, info: string): void {
 	dest.append(`<div class="entry jsonerror"><div>!@#! ${info} !@#!</div></div>`)
 }

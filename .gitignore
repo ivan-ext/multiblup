@@ -8,6 +8,8 @@
 /containers/
 /monitor/bin/
 /monitor/node_modules/
+/DockerPortMan/.idea/
+/DockerPortMan/.gradle/
 
 ##### Dirs by name
 

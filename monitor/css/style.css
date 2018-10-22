@@ -68,7 +68,6 @@ body {
 	overflow: hidden;
 }
 
-
 .e1 {
 	flex-shrink: 1;
 	flex-grow: 1;
@@ -84,9 +83,12 @@ body {
 	width: 5.5em;
 }
 
+/* parent of subline */
 .e4 {
 	flex-shrink: 0;
 	width: 10em;
+	display: grid;
+	place-content: center;
 }
 
 .e5 {
@@ -94,9 +96,11 @@ body {
 	width: 0.5em;
 }
 
+/* child of e4 */
 .subline {
 	font-size: 0.65em;
 	line-height: 90%;
+	place-self: center;
 }
 
 .dockerline {
