@@ -3,17 +3,18 @@ import * as q from 'jquery'
 // ====================================================================================================================
 // Globals
 // ====================================================================================================================
-const REFRESH_DELAY_IN_MILLIS: number = 2000
+const REFRESH_DELAY_IN_MILLIS: number = 3000
 const NBSP: string = '\xa0' // non-breaking space
 
 const baseUrl: string = getParam('base')
 const linkSuffix: string = getParam('suffix')
+const trackerPrefix: string = getParam('tracker')
 
 // ====================================================================================================================
 // Entrypoint
 // ====================================================================================================================
 // main loop
-q(document).ready(() => main())
+q(document).ready(() => enterMainLoop())
 
 // ====================================================================================================================
 // Enums
@@ -30,75 +31,70 @@ enum Result { // string values are used by .css
 // ====================================================================================================================
 function getParam(name: string): string {
 	const temp: string | null = new URL(document.URL).searchParams.get(name)
-	if (temp == null || temp === '') {
-		alert(`Request parameter required: ${name}`)
+	if (temp == null) {
+		alert(`Required URL parameter not specified: ${name}. This might affect some functionality.`)
 		return ''
 	} else {
 		return temp
 	}
 }
 
-function main(): void {
+function enterMainLoop(): void {
 	const htmlBuffer: JQuery<HTMLElement> = q('#buffer')
 	const htmlList: JQuery<HTMLElement> = q('#list')
 
-	mainLoop(htmlList, htmlBuffer).then(() => setTimeout(main, REFRESH_DELAY_IN_MILLIS))
+	mainLoop(htmlList, htmlBuffer).then(() => setTimeout(enterMainLoop, REFRESH_DELAY_IN_MILLIS))
 }
 
 async function mainLoop(dest: JQuery<HTMLElement>, buffer: JQuery<HTMLElement>): Promise<void> {
 	try {
-		const allJobs: IJenkinsJobs = await getJobs()
-
-		const jobsPromises: Array<Promise<IJenkinsJob>> = allJobs.jobs.map(j => {
-			return getJob(j.name)
-		})
-		const jobsResults: IJenkinsJob[] = await Promise.all(jobsPromises)
-
-		const buildsPromises: Array<Promise<IJenkinsBuild>> = jobsResults.map(j => {
-			return getBuild(j.name)
-		})
-		const buildsResults: IJenkinsBuild[] = await Promise.all(buildsPromises)
-
-		const pipelinePromises: Array<Promise<IJenkinsPipeline>> = jobsResults.map(j => {
-			return getPipeline(j.name)
-		})
-		const pipelineResults: IJenkinsPipeline[] = await Promise.all(pipelinePromises)
-
-		for (let i: number = 0; i < jobsResults.length; ++i) {
-			forEachJob(buffer, jobsResults[i], buildsResults[i], pipelineResults[i])
-		}
+		const jobs: IJenkinsJobs = await requestJobs()
+		await processJobs(jobs, dest, buffer)
 	} catch (e) {
 		/* Javascript returns here an object with following properties:
 			readyState,getResponseHeader,getAllResponseHeaders,setRequestHeader,overrideMimeType,
 			statusCode,abort,state,always,catch,pipe,then,promise,progress,done,fail,responseJSON,
 			status,statusText */
-		failTo(buffer, e.statusText)
+		failTo(buffer, `Couldn't get list of jobs: "${e.status}|${e.statusText}"`)
 	} finally {
 		moveContentsIfDiffer(buffer, dest)
 	}
 }
 
-async function getJobs(): Promise<IJenkinsJobs> {
+async function processJobs(jobs: IJenkinsJobs, dest: JQuery<HTMLElement>, buffer: JQuery<HTMLElement>): Promise<void> {
+	for (const jobReference of jobs.jobs) {
+		try {
+			const build: IJenkinsBuild = await requestBuild(jobReference.name)
+			const pipeline: IJenkinsPipeline = await requestPipeline(jobReference.name)
+
+			forEachJob(buffer, jobReference, build, pipeline)
+		} catch (e) {
+			failItemTo(buffer, `Error getting job data: "${e.status}|${e.statusText}"`, `"${jobReference.name}"`)
+		}
+	}
+}
+
+async function requestJobs(): Promise<IJenkinsJobs> {
 	const url: string = `${baseUrl}/api/json`
 	return (await q.getJSON(url, {})) as IJenkinsJobs
 }
 
-async function getJob(jobName: string): Promise<IJenkinsJob> {
-	const url: string = `${baseUrl}/job/${jobName}/api/json`
-	return (await q.getJSON(url, {})) as IJenkinsJob
-}
-
-async function getBuild(jobName: string): Promise<IJenkinsBuild> {
+async function requestBuild(jobName: string): Promise<IJenkinsBuild> {
 	const url: string = `${baseUrl}/job/${jobName}/lastBuild/api/json`
 	return (await q.getJSON(url, {})) as IJenkinsBuild
 }
 
-async function getPipeline(jobName: string): Promise<IJenkinsPipeline> {
+async function requestPipeline(jobName: string): Promise<IJenkinsPipeline> {
 	const url: string = `${baseUrl}/job/${jobName}/lastBuild/wfapi`
 	return (await q.getJSON(url, {})) as IJenkinsPipeline
 }
 
-function forEachJob(dest: JQuery<HTMLElement>, job: IJenkinsJob, build: IJenkinsBuild, pipe: IJenkinsPipeline): void {
+function forEachJob(
+	dest: JQuery<HTMLElement>,
+	job: IJenkinsJobReference,
+	build: IJenkinsBuild,
+	pipe: IJenkinsPipeline
+): void {
 	const then: number = build.timestamp
 	const now: number = new Date().getTime()
 	const ago: string = getReadableAgo(now - then)
@@ -132,44 +128,62 @@ function forEachJob(dest: JQuery<HTMLElement>, job: IJenkinsJob, build: IJenkins
 			? `<div class="bounce1"></div>` + `<div class="bounce2"></div>` + `<div class="bounce3"></div>`
 			: ''
 
+	const lastStage: IJenkinsPipelineStage = pipe.stages[pipe.stages.length - 1]
+
 	const jobNameShorted: string = shorten(String(decodeURIComponent(job.name)))
 	const splitBuildDescription: string[] = build.description.split('/')
 	const commitNumber: string = emptyIfNull(splitBuildDescription[0])
 	const versionString: string = emptyIfNull(splitBuildDescription[1])
 	const ticketNumber: string = emptyIfNull(splitBuildDescription[2])
 	const webPort: string = emptyIfNull(splitBuildDescription[3])
-	const webLink: string = `http://${new URL(document.URL).hostname}:${webPort}/${linkSuffix}`
+	const hostname: string = new URL(document.URL).hostname
+	const webLink: string = `http://${hostname}:${webPort}/${linkSuffix}`
+
+	let ticketStatus: string = ''
+	if (ticketNumber !== '') {
+		ticketStatus = '(no tracker)' // TODO !!!
+	}
 
 	const dockerNet: boolean = true
 	const dockerDb: boolean = true
 	const dockerWeb: boolean = false
 
-	let appendStatusHtml: string = `<div class="subline">#${build.number} &nbsp; ${ago}</div>`
+	let appendStatusHtml: string = `<div class="subline">
+		<span class="buildnumber">#${build.number}</span> &nbsp; ${ago}</div>`
 
 	if (stage != null) {
-		appendStatusHtml += `<div class="subline">${stage}</div>`
+		let durationInfo: string = ''
+		if (result === Result.IN_PROGRESS) {
+			durationInfo = ` ${Math.round(lastStage.durationMillis / 1000)}s`
+		}
+		appendStatusHtml += `<div class="subline">${stage}${durationInfo}</div>`
 	}
 
 	dest.append(
 		`<div class="entry line ${result} ${additionalCssClass}">
 			<div class="spinner">${effect}</div>
 			<div class="e1"><a href="${webLink}">${jobNameShorted}</a></div>
-			<div class="e2">#${ticketNumber}</div>
+			<div class="e2">
+				<a href="${trackerPrefix}${ticketNumber}">
+					<div class="subline">${ticketNumber === '' ? '' : '#' + ticketNumber}</div>
+					<div class="subline">${ticketStatus}</div>
+				</a>
+			</div>
 			<div class="e3">
-			<div class="subline">${versionString}</div>
+				<div class="subline">${versionString}</div>
 				<div class="subline">@${commitNumber}</div>
 			</div>
-			<div class="e4">${appendStatusHtml}</div>
+			<div class="e4"><a href="${baseUrl}/job/${job.name}">${appendStatusHtml}</a></div>
 			<div class="e5">
-				<div class="dockerline">${grayIfFalse(dockerNet, 'N')}</div>
-				<div class="dockerline">${grayIfFalse(dockerDb, 'D')}</div>
-				<div class="dockerline">${grayIfFalse(dockerWeb, 'W')}</div>
+				<div class="dockerline">${toLetterStatus(dockerNet, 'N')}</div>
+				<div class="dockerline">${toLetterStatus(dockerDb, 'D')}</div>
+				<div class="dockerline">${toLetterStatus(dockerWeb, 'W')}</div>
 			</div>
 		</div>`
 	)
 }
 
-function grayIfFalse(state: boolean, letter: string): string {
+function toLetterStatus(state: boolean, letter: string): string {
 	const clazz: string = state ? 'dockerGood' : 'dockerBad'
 	return `<span class="${clazz}">${letter}</span>`
 }
@@ -228,6 +242,15 @@ function failTo(dest: JQuery<HTMLElement>, info: string): void {
 	dest.append(`<div class='pageerror'>!@#! ${info} !@#!</div>`)
 }
 
+function failItemTo(dest: JQuery<HTMLElement>, info1: string, info2: string): void {
+	dest.append(
+		`<div class="entry line joberror">
+			<div class="subline">${info1}</div>
+			<div class="subline">${info2}</div>
+		</div>`
+	)
+}
+
 function moveContentsIfDiffer(source: JQuery<HTMLElement>, dest: JQuery<HTMLElement>): void {
 	if (source.html() !== dest.html()) {
 		dest.empty()
@@ -247,10 +270,6 @@ function emptyIfNull(text: string | null): string {
 // ====================================================================================================================
 // TODO Not used
 // ====================================================================================================================
-function failItemTo(dest: JQuery<HTMLElement>, info: string): void {
-	dest.append(`<div class="entry jsonerror"><div>!@#! ${info} !@#!</div></div>`)
-}
-
 function getReadableDate(timestamp: number): string {
 	const d: Date = new Date(timestamp)
 	return (

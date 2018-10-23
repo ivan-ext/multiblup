@@ -1,14 +1,11 @@
 #!/usr/bin/env ruby
 
-#
 # This script manages mappings between branch names and their ports.
 # Run it without arguments to print usage.
-#
 
-require 'optparse'
 require 'json'
 
-startPort = 11001
+startport = 11001
 increment = 10
 
 mode = ''
@@ -28,23 +25,28 @@ if ARGV.length == 2 && ARGV[0] == 'get-all' \
 end
 
 if mode == ''
-	abort("Following arguments are recognized:\n\n" \
-		+ "1) <this-script> get-all       <mapping-file>\n" \
+	abort("All invocations need the parameter <json-file>.\n" \
+		+ "Following arguments are recognized:\n\n" \
+		+ "1) <this-script> get-all       <json-file>\n" \
 		+ "     --  returns the file contents\n" \
-		+ "2) <this-script> remove-all    <mapping-file>\n" \
+		+ "2) <this-script> remove-all    <json-file>\n" \
 		+ "     --  returns the file contents\n" \
-		+ "3) <this-script> get-existing  <mapping-file> <branch-name>\n" \
+		+ "3) <this-script> get-existing  <json-file> <branch-name>\n" \
 		+ "     --  returns existing port for the given branch, or '' if none is mapped\n" \
-		+ "4) <this-script> get-or-create <mapping-file> <branch-name>\n" \
+		+ "4) <this-script> get-or-create <json-file> <branch-name>\n" \
 		+ "     --  returns existing or newly-created port for the given branch\n")
 end
 
-File.open("docker-mapping.json", File::RDWR | File::CREAT) { |f|
-	STDERR.puts "Locking file..."
+unless File.exist?(mappingfile)
+	abort("Mapping file \"#{mappingfile}\" doesn't exist.\n" \
+		+ "Please create a valid JSON file with an empty array as its only content, such as:\n" \
+		+ "[ ] <newline>\n")
+end
 
+File.open(mappingfile, File::RDWR) { |f|
+	STDERR.puts 'Locking file...'
 	f.flock(File::LOCK_EX)
-
-	STDERR.puts "File locked!"
+	STDERR.puts 'File locked!'
 
 	raw = f.read
 	data = JSON.parse(raw)
@@ -72,15 +74,15 @@ File.open("docker-mapping.json", File::RDWR | File::CREAT) { |f|
 		f.write(JSON.pretty_generate([]))
 	elsif mode == 'get-or-create'
 		existing = ''
-		highestValue = startPort
+		highestvalue = startport
 
 		for item in data
 			item.each do |key, value|
 				if key == branchname
 					existing = value.to_i
 				end
-				if value.to_i > highestValue
-					highestValue = value.to_i
+				if value.to_i > highestvalue
+					highestvalue = value.to_i
 				end
 			end
 		end
@@ -88,17 +90,17 @@ File.open("docker-mapping.json", File::RDWR | File::CREAT) { |f|
 		if existing != ''
 			puts existing
 		else
-			newPort = highestValue + increment
-			keyval = { branchname => newPort }
+			newport = highestvalue + increment
+			keyval = { branchname => newport }
 			data << keyval
 
 			f.rewind
 			f.truncate(0)
 			f.write(JSON.pretty_generate(data))
 
-			puts newPort
+			puts newport
 		end
 	end
 }
 
-STDERR.puts "Done!"
+STDERR.puts 'Done!'

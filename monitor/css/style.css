@@ -27,7 +27,7 @@ body {
 .entry {
 	display: flex;
 	flex-wrap: nowrap;
-	justify-content: flex-end;
+	justify-content: center;
 	overflow: hidden;
 	white-space: nowrap;
 
@@ -38,6 +38,7 @@ body {
 	border-width: 0.1em;
 	border-radius: 0.5em;
 	border-style: solid;
+	height: 1.2em;
 }
 
 .headerline {
@@ -58,14 +59,15 @@ body {
 .e3,
 .e4,
 .e5 {
+	display: grid;
 	overflow: hidden;
+	place-content: center;
 }
 
 .e2,
 .e3,
 .e4 {
 	border-left: rgba(255, 255, 255, 0.33) 0.15em solid;
-	overflow: hidden;
 }
 
 .e1 {
@@ -83,12 +85,9 @@ body {
 	width: 5.5em;
 }
 
-/* parent of subline */
 .e4 {
 	flex-shrink: 0;
-	width: 10em;
-	display: grid;
-	place-content: center;
+	width: 8.5em;
 }
 
 .e5 {
@@ -96,16 +95,11 @@ body {
 	width: 0.5em;
 }
 
-/* child of e4 */
+/* child of e1..e5 */
 .subline {
 	font-size: 0.65em;
 	line-height: 90%;
 	place-self: center;
-}
-
-.dockerline {
-	font-size: 0.425em;
-	line-height: 90%;
 }
 
 .good {
@@ -129,16 +123,22 @@ body {
 	background-color: #777;
 }
 
+.dockerline {
+	font-size: 0.425em;
+	line-height: 95%;
+	place-self: center;
+}
+
 .dockerGood {
-	color: white;
+	color: rgba(255, 255, 255, 0.2);
 }
 
 .dockerBad {
-	color: rgba(0, 0, 0, 0.33);
+	color: black;
 }
 
 .buildnumber {
-	opacity: 0.25;
+	opacity: 0.2;
 }
 
 /* this must come AFTER e1|e2|e3|e4 to OVERWRITE their values */
@@ -152,14 +152,20 @@ body {
 	========================================================================= */
 
 a:link,
-a:visited {
+a:visited,
+a:hover,
+a:active {
 	color: white;
+
+}
+
+a:link,
+a:visited {
 	text-decoration: none;
 }
 
 a:hover,
 a:active {
-	color: white;
 	text-decoration: underline;
 }
 
@@ -167,4 +173,14 @@ a:active {
 	color: black;
 	background-color: red;
 	padding: 2em;
+}
+
+.joberror {
+	color: black;
+	border-color: transparent;
+	background-color: transparent;
+
+	display: grid;
+	overflow: hidden;
+	place-content: center;
 }

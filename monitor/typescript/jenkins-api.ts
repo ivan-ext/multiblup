@@ -29,12 +29,7 @@ interface IJenkinsJobReference {
 	url: string
 }
 
-interface IJenkinsBuildReference {
-	_class: any
-	number: number
-	url: string
-}
-
+// WARNING! This should NOT be used, because it contains references to ALL builds.
 interface IJenkinsJob {
 	// ----- Typed ------------------------------------------------------------
 	buildable: boolean
@@ -66,6 +61,12 @@ interface IJenkinsJob {
 	healthReport: any
 	property: any
 	queueItem: any
+}
+
+interface IJenkinsBuildReference {
+	_class: any
+	number: number
+	url: string
 }
 
 interface IJenkinsBuild {
