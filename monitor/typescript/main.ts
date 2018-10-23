@@ -5,7 +5,9 @@ import * as q from 'jquery'
 // ====================================================================================================================
 const REFRESH_DELAY_IN_MILLIS: number = 2000
 const NBSP: string = '\xa0' // non-breaking space
-const BASE_PARAM_NAME: string = 'base' // parameter defines base URL for Jenkins JSON API calls
+
+const baseUrl: string = getParam('base')
+const linkSuffix: string = getParam('suffix')
 
 // ====================================================================================================================
 // Entrypoint
@@ -26,34 +28,39 @@ enum Result { // string values are used by .css
 // ====================================================================================================================
 // Functions
 // ====================================================================================================================
-function main(): void {
-	const htmlBuffer: JQuery<HTMLElement> = q('#buffer')
-	const htmlList: JQuery<HTMLElement> = q('#list')
-	const baseParam: string | null = new URL(document.URL).searchParams.get(BASE_PARAM_NAME)
-
-	if (baseParam == null) {
-		failTo(htmlList, `Request parameter required: "?${BASE_PARAM_NAME}=..."`)
+function getParam(name: string): string {
+	const temp: string | null = new URL(document.URL).searchParams.get(name)
+	if (temp == null || temp === '') {
+		alert(`Request parameter required: ${name}`)
+		return ''
 	} else {
-		mainLoop(baseParam.trim(), htmlList, htmlBuffer).then(() => setTimeout(main, REFRESH_DELAY_IN_MILLIS))
+		return temp
 	}
 }
 
-async function mainLoop(baseUrl: string, dest: JQuery<HTMLElement>, buffer: JQuery<HTMLElement>): Promise<void> {
+function main(): void {
+	const htmlBuffer: JQuery<HTMLElement> = q('#buffer')
+	const htmlList: JQuery<HTMLElement> = q('#list')
+
+	mainLoop(htmlList, htmlBuffer).then(() => setTimeout(main, REFRESH_DELAY_IN_MILLIS))
+}
+
+async function mainLoop(dest: JQuery<HTMLElement>, buffer: JQuery<HTMLElement>): Promise<void> {
 	try {
-		const allJobs: IJenkinsJobs = await getJobs(baseUrl)
+		const allJobs: IJenkinsJobs = await getJobs()
 
 		const jobsPromises: Array<Promise<IJenkinsJob>> = allJobs.jobs.map(j => {
-			return getJob(baseUrl, j.name)
+			return getJob(j.name)
 		})
 		const jobsResults: IJenkinsJob[] = await Promise.all(jobsPromises)
 
 		const buildsPromises: Array<Promise<IJenkinsBuild>> = jobsResults.map(j => {
-			return getBuild(baseUrl, j.name)
+			return getBuild(j.name)
 		})
 		const buildsResults: IJenkinsBuild[] = await Promise.all(buildsPromises)
 
 		const pipelinePromises: Array<Promise<IJenkinsPipeline>> = jobsResults.map(j => {
-			return getPipeline(baseUrl, j.name)
+			return getPipeline(j.name)
 		})
 		const pipelineResults: IJenkinsPipeline[] = await Promise.all(pipelinePromises)
 
@@ -71,22 +78,22 @@ async function mainLoop(baseUrl: string, dest: JQuery<HTMLElement>, buffer: JQue
 	}
 }
 
-async function getJobs(baseUrl: string): Promise<IJenkinsJobs> {
+async function getJobs(): Promise<IJenkinsJobs> {
 	const url: string = `${baseUrl}/api/json`
 	return (await q.getJSON(url, {})) as IJenkinsJobs
 }
 
-async function getJob(baseUrl: string, jobName: string): Promise<IJenkinsJob> {
+async function getJob(jobName: string): Promise<IJenkinsJob> {
 	const url: string = `${baseUrl}/job/${jobName}/api/json`
 	return (await q.getJSON(url, {})) as IJenkinsJob
 }
 
-async function getBuild(baseUrl: string, jobName: string): Promise<IJenkinsBuild> {
+async function getBuild(jobName: string): Promise<IJenkinsBuild> {
 	const url: string = `${baseUrl}/job/${jobName}/lastBuild/api/json`
 	return (await q.getJSON(url, {})) as IJenkinsBuild
 }
 
-async function getPipeline(baseUrl: string, jobName: string): Promise<IJenkinsPipeline> {
+async function getPipeline(jobName: string): Promise<IJenkinsPipeline> {
 	const url: string = `${baseUrl}/job/${jobName}/lastBuild/wfapi`
 	return (await q.getJSON(url, {})) as IJenkinsPipeline
 }
@@ -126,10 +133,12 @@ function forEachJob(dest: JQuery<HTMLElement>, job: IJenkinsJob, build: IJenkins
 			: ''
 
 	const jobNameShorted: string = shorten(String(decodeURIComponent(job.name)))
-	const splitBuildDescription: string[] = build.description.split('/', 3)
+	const splitBuildDescription: string[] = build.description.split('/')
 	const commitNumber: string = emptyIfNull(splitBuildDescription[0])
 	const versionString: string = emptyIfNull(splitBuildDescription[1])
 	const ticketNumber: string = emptyIfNull(splitBuildDescription[2])
+	const webPort: string = emptyIfNull(splitBuildDescription[3])
+	const webLink: string = `http://${new URL(document.URL).hostname}:${webPort}/${linkSuffix}`
 
 	const dockerNet: boolean = true
 	const dockerDb: boolean = true
@@ -144,7 +153,7 @@ function forEachJob(dest: JQuery<HTMLElement>, job: IJenkinsJob, build: IJenkins
 	dest.append(
 		`<div class="entry line ${result} ${additionalCssClass}">
 			<div class="spinner">${effect}</div>
-			<div class="e1">${jobNameShorted}</div>
+			<div class="e1"><a href="${webLink}">${jobNameShorted}</a></div>
 			<div class="e2">#${ticketNumber}</div>
 			<div class="e3">
 			<div class="subline">${versionString}</div>

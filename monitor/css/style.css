@@ -151,6 +151,18 @@ body {
 		Misc
 	========================================================================= */
 
+a:link,
+a:visited {
+	color: white;
+	text-decoration: none;
+}
+
+a:hover,
+a:active {
+	color: white;
+	text-decoration: underline;
+}
+
 .pageerror {
 	color: black;
 	background-color: red;
