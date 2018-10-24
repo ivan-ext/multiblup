@@ -1,6 +1,6 @@
 node {
 	checkout scm
 
-	def lib = load 'jenkins/lib.groovy'
+	def lib = load 'continuous/jenkins/lib.groovy'
 	lib.dockerObliterate()
 }

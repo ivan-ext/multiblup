@@ -5,7 +5,7 @@
 
 require 'json'
 
-startport = 11001
+startport = 11000
 increment = 10
 
 mode = ''
@@ -30,7 +30,7 @@ if mode == ''
 		+ "1) <this-script> get-all       <json-file>\n" \
 		+ "     --  returns the file contents\n" \
 		+ "2) <this-script> remove-all    <json-file>\n" \
-		+ "     --  returns the file contents\n" \
+		+ "     --  removes the file contents, leaving an empty json array\n" \
 		+ "3) <this-script> get-existing  <json-file> <branch-name>\n" \
 		+ "     --  returns existing port for the given branch, or '' if none is mapped\n" \
 		+ "4) <this-script> get-or-create <json-file> <branch-name>\n" \

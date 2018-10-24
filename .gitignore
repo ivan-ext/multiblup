@@ -6,10 +6,8 @@
 /.idea/
 /.gradle/
 /containers/
-/monitor/bin/
-/monitor/node_modules/
-/DockerPortMan/.idea/
-/DockerPortMan/.gradle/
+/continuous/monitor/bin/
+/continuous/monitor/node_modules/
 
 ##### Dirs by name
 
@@ -19,5 +17,5 @@
 
 ##### Files
 
-/docker/docker-compose.yml
-/docker/web/Dockerfile
+/continuous/docker/docker-compose.yml
+/continuous/docker/web/Dockerfile
