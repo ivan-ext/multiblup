@@ -1,9 +1,9 @@
 version: '3.5'
 
-networks:
-  compose_net__!!IMAGE_BASE!!:
-    name: compose_net__!!IMAGE_BASE!!
-    driver: bridge
+# networks:
+#   compose_net__!!IMAGE_BASE!!:
+#     name: compose_net__!!IMAGE_BASE!!
+#     driver: bridge
 
 services:
   multi_web__!!IMAGE_BASE!!:
@@ -11,9 +11,14 @@ services:
     container_name: multi_web__!!CONTAINER_NAME!!
     build:
       context: web
-    networks:
-      - compose_net__!!IMAGE_BASE!!
+    # networks:
+    #   - compose_net__!!IMAGE_BASE!!
     ports:
       - "!!CONTAINER_PORT!!:80"
 #    volumes:
 #      - "./web/.temp/:/usr/share/nginx/html/:ro"
+
+networks:
+  default:
+    external:
+      name: my_dock_net
