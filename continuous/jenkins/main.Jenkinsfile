@@ -1,10 +1,5 @@
 try {
 	stage('Prepare') {
-		// sh "git checkout --detach " +
-		// 	"&& git fetch origin '+refs/heads/*:refs/heads/*' " +
-		// 	"&& git pull --force  " +
-		// 	"&& git checkout '${BRANCH_NAME}'"
-
 		// TODO increment container port offset globally somehow !@#!
 		jenkinsHost     = getJenkinsHost()
 		containerOffset = (env.BRANCH_NAME == 'master' ? 1 : 2)
