@@ -1,10 +1,5 @@
 try {
 	stage('Prepare') {
-		// sh "git checkout --detach " +
-		// 	"&& git fetch origin '+refs/heads/*:refs/heads/*' " +
-		// 	"&& git pull --force  " +
-		// 	"&& git checkout '${BRANCH_NAME}'"
-
 		// TODO increment container port offset globally somehow !@#!
 		jenkinsHost     = getJenkinsHost()
 		containerOffset = (env.BRANCH_NAME == 'master' ? 1 : 2)
@@ -18,7 +13,7 @@ try {
 		echo "Build label set to: ${currentBuild.displayName}"
 	}
 	stage('Container Kill') {
-		if (fileExists('docker/docker-compose.yml')) {
+		if (fileExists('continuous/docker/docker-compose.yml')) {
 			header('Killing old container')
 			doGradle("dockerTryRemove")
 		} else {
@@ -57,7 +52,7 @@ try {
 
 def doGradle(String params) {
 	ansiColor('xterm') {
-		sh "./gradlew --console plain -q -PthrowAwayOffset='${containerOffset}' ${params}"
+		sh "./gradlew --console plain -PjenkinsBuild='${containerOffset}' ${params}"
 	}
 }
 

@@ -1,11 +1,14 @@
 node('master') {
+	ciBranch = 'continuous'
+
 	checkout scm
 
 	sh "git checkout --detach" +
 		" && git fetch --force origin '+refs/heads/*:refs/heads/*'" +
-		" && git pull --force" +
 		" && git checkout --force '${BRANCH_NAME}'" +
-		" && git checkout --force origin/master -- continuous"
+		" && git reset --hard" +
+		" && git clean -fd" +
+		" && git checkout --force '${ciBranch}' -- continuous" // dest dir
 
 	load 'continuous/jenkins/main.Jenkinsfile'
 }

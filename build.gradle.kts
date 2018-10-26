@@ -41,15 +41,16 @@ tasks {
     project.defaultTasks(dockerStatus.name)
 
     internalDockerCleanTemp {
-        delete("$projectDir/docker/db/.temp", "$projectDir/docker/web/.temp")
+        System.out.println("@@@@@@@@@@@@@@@@ --- BTW, projectDir is $projectDir")
+        delete("$projectDir/continuous/docker/db/.temp", "$projectDir/continuous/docker/web/.temp")
     }
 
     tasks ["clean"].dependsOn += internalDockerCleanTemp
 
     internalDockerInitDirs {
         doLast {
-            mkdir("$projectDir/docker/db/.temp")
-            mkdir("$projectDir/docker/web/.temp")
+            mkdir("$projectDir/continuous/docker/db/.temp")
+            mkdir("$projectDir/continuous/docker/web/.temp")
             mkdir("$projectDir/containers/1/shared")
             mkdir("$projectDir/containers/1/export")
             mkdir("$projectDir/containers/1/import")
@@ -61,7 +62,7 @@ tasks {
         dependsOn += internalDockerPrepareBuildCopy
 
         doLast {
-            overwriteFileWithText("$projectDir/docker/web/.temp/build.txt", jenkinsBuild)
+            overwriteFileWithText("$projectDir/continuous/docker/web/.temp/build.txt", jenkinsBuild)
         }
     }
 
@@ -124,7 +125,7 @@ tasks {
 
         doLast {
             delete("$projectDir/containers/1/shared/db-is-ready.info")
-            // overwriteFileWithText("$projectDir/docker/db/db.env", "AAA_DO_REUSE=no")
+            // overwriteFileWithText("$projectDir/continuous/docker/db/db.env", "AAA_DO_REUSE=no")
             dockerCompose("up", "--detach")
         }
     }
@@ -135,7 +136,7 @@ tasks {
 
         doLast {
             delete("$projectDir/containers/1/shared/db-is-ready.info")
-            // overwriteFileWithText("$projectDir/docker/db/db.env", "AAA_DO_REUSE=yes")
+            // overwriteFileWithText("$projectDir/continuous/docker/db/db.env", "AAA_DO_REUSE=yes")
             dockerCompose("up", "--detach")
         }
     }
@@ -185,7 +186,7 @@ fun dockerCompose(vararg args: String) {
         else -> throw Error("Your OS is not supported (and stinks) - ${OS().familyName}")
     }
 
-    runRaw(*prepend, "-f", "docker/docker-compose.yml", *args)
+    runRaw(*prepend, "-f", "$projectDir/continuous/docker/docker-compose.yml", *args)
 }
 
 fun runRaw(vararg args: String) {
